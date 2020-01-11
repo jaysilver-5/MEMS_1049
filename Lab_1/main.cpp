@@ -28,7 +28,7 @@ int main(void)
 	while(1)
     {
 				
-       	if (PIND & 0b0001000) // "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
+       	if (PIND & 0b00001000) // "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
 		   // When read  as 1 (open switch) clear bit PD6 to turn on the LED.
 		{
 			PORTD = PORTD & 0b10111111; // Clear PD6 (which is active low),  leave other bits unchanged  (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
@@ -38,7 +38,7 @@ int main(void)
 			PORTD = PORTD | 0b01000000;  // Set bit PD6 to turn off the  LED (which is active low), leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
 		}
 		
-		if (PIND & 0b0010000) // "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
+		if (PIND & 0b00010000) // "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
 		{
 			PORTD = PORTD & 0b01111111;  // Clear PD7, leave other bits unchanged (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
 		}
