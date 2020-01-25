@@ -43,8 +43,8 @@ int main(void)
     // ============================================
 	while(1)
     {
-				
-       	if (PIND & 0b0001000) // "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
+		//check "door 1" to see if it is open or closed
+	   	if (PIND & 0b00001000) // Door 1 switch is open. "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
 		   // When read  as 1 (open switch) clear bit PD6 to turn on the LED.
 		{
 			PORTD = PORTD & 0b10111111; // Clear PD6 (which is active low),  leave other bits unchanged  (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
@@ -55,7 +55,7 @@ int main(void)
 				wait(50); // debounce delay
 			}
 		}
-		else 
+		else // Door 1 switch is closed.
 		{
 			PORTD = PORTD | 0b01000000;  // Set bit PD6 to turn off the  LED (which is active low), leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
 			if (flag1 == 1) // only want to use debounce the first time we see the switch close
@@ -65,7 +65,8 @@ int main(void)
 			}
 		}
 		
-		if (PIND & 0b0010000) // "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
+		//check "door 2" to see if it is open or closed
+		if (PIND & 0b00010000) // Door 2 switch is open.   "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
 		{
 			PORTD = PORTD & 0b01111111;  // Clear PD7, leave other bits unchanged (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
 			if (flag2 == 0) // only want to change count and use debounce the first time we see the switch open
@@ -76,7 +77,7 @@ int main(void)
 			}
 
 		}
-		else 
+		else // Door 2 switch is closed.
 		{
 			PORTD = PORTD | 0b10000000; // Set PD7, leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
 			if (flag2 == 1) // only want to use debounce the first time we see the switch close
