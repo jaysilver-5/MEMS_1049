@@ -73,21 +73,38 @@
 ; ============================================
 ;
 Int0_name:
-	PUSH SREG // push Status Register onto the Stack
+	PUSH R16 // put R16 data onto the stack in case there is useful information in that register from Main program
+	IN R16, SREG 
+	PUSH R16 // push Status Register onto the Stack
+
+	// May have to preserve other important register information. Note that the program counter is automatically pushed to the stack.
 
 	// Do some interrupt stuff.
 
-	POP SREG // pull Status Register off the Stack (make sure that there is nothing else on the Stack
+	// Clean up before exiting ISR:
+	LDI R16, 0b00000001
+	OUT EIFR, R16 ; clear the INT0 flag bit (in case the interrupt was set during the ISR -- as in switch bounce). Note that this 
+	; will not affect the INT1 flag, in case it was triggered during this ISR.
+	POP R16
+	OUT SREG, R16 // pull Status Register off the Stack (make sure that there is nothing else on top of it on the Stack
 				// at this point so that proper SREG info is pulled)
+	POP R16 // return original data to R16
 
 	RETI // Return from interrupt.  Program Counter is reloaded with instruction address in main code where it left off.
 
 Int1_name:
-	PUSH SREG // push Status Register onto the Stack
+	PUSH R16 // put R16 data onto the stack in case there is useful information in that register from Main program
+	IN R16, SREG
+	PUSH R16 // push Status Register onto the Stack
 
 	// Do some more interrupt stuff.
 
-	POP SREG
+	LDI R16, 0b00000010 ; clear the INT1 flag bit (in case the interrupt was set during the ISR -- as in switch bounce). 
+	OUT EIFR, R16
+	POP R16
+	OUT SREG, R16 // pull Status Register off the Stack (make sure that there is nothing else on top of it on the Stack
+				// at this point so that proper SREG info is pulled)
+	POP R16 // return original data to R16
 
 	RETI
 ;
@@ -125,7 +142,7 @@ Main:
 Loop_main: 
 
 	NOP  
-	// Do some main stuff.
+	// Do some main stuff.  The interrupt(s) will occur sometime during this code.
 
 RJMP Loop_main
 
