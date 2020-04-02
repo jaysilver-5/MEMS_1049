@@ -72,7 +72,6 @@
 ; I N T E R R U P T  S E R V I C E S
 ; ============================================
 ;
-/* EXINT0: switch 1 will count the number up or down*/
 Int0_name:
 	PUSH SREG // push Status Register onto the Stack
 
@@ -83,7 +82,6 @@ Int0_name:
 
 	RETI // Return from interrupt.  Program Counter is reloaded with instruction address in main code where it left off.
 
-/* EXINT1: switch 2 will change the counting direction */
 Int1_name:
 	PUSH SREG // push Status Register onto the Stack
 
