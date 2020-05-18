@@ -18,7 +18,7 @@
 #include <avr/io.h>
 
 //** Functions **//
-void wait(volatile int multiple, volatile char time_choice);
+void wait_with_prescaler_selection(volatile int multiple, volatile char time_choice);
 void delay_T_msec_timer0(char choice);
 
 //** GLOBAL VARIABLES **/
@@ -36,14 +36,14 @@ int main(void)
         PORTC = PORTC ^ 1<<PORTC0;  // Note that this uses the Exclusive OR operator, which toggles an individual 
 			// bit without changing the other bits in PORTC
                 
-        wait(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
+        wait_with_prescaler_selection(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
          
     }
 	
 	return(0);
 } // end main()
 
-void wait(volatile int multiple, volatile char time_choice) {
+void wait_with_prescaler_selection(volatile int multiple, volatile char time_choice) {
 	//*** wait ***
 	/* This subroutine calls others to create a delay.
 		 Total delay = multiple*T, where T is in msec and is the delay created by the called function.
