@@ -1,3 +1,4 @@
+// stepper_motor_template.c
 
 // This program is a template for controlling a stepper motor.
 // The code is not complete, so will not stand alone, but 
