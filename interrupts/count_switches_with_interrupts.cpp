@@ -77,7 +77,7 @@ ISR(INT0_vect) // This routine is entered if Switch 1 goes high (door 1 is opene
 	}
 	PORTC = PORTC | 0b00000100;  // Turn off LED by setting bit PC2 (which is active low), leave other bits unchanged (OR PORTC with a binary number that has 1 in the only bit that we want to ensure is 1)
 	wait(debounce,2); // debounce the switch
-	EIFR = EIFR | 1<<INTF0;  // Clear the interrupt flag in case it was reset while in the ISR (so that it doesn't run again)
+	EIFR = 0b00000001;  // Clear the INT0 interrupt flag in case it was reset while in the ISR (so that it doesn't run again) but ignore the INT1 flag in case it was set while in this ISR
 	
 }
 
@@ -94,8 +94,7 @@ ISR(INT1_vect)
 	
 	PORTC = PORTC | 0b00001000;  // Turn off LED by setting bit PC3 (which is active low), leave other bits unchanged (OR PORTC with a binary number that has 1 in the only bit that we want to ensure is 1)
 	wait(debounce,2); // debounce the switch
-	EIFR = EIFR | 1<<INTF1;  // Clear the interrupt flag in case it was reset while in the ISR (so that it doesn't run again)
-	
+	EIFR = 0b00000010;  // Clear the INT1 interrupt flag in case it was reset while in the ISR (so that it doesn't run again) but ignore the INT0 flag in case it was set while in this ISR	
 }
 
 
