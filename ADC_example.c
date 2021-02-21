@@ -10,7 +10,7 @@
 
 An analog voltage is read (e.g. from potentiometer).
 
-The binary value of the high byte (bits 2-9 of the 10-bit converted value) are echoed out PORTD to be displayed on LEDs.
+The binary value of the high byte (bits 2-9 of the 10-bit converted value) are echoed out PORTB to be displayed on LEDs.
 
 */
 
@@ -40,7 +40,7 @@ int main(void)
 	
 	sensorvalue = ADCH; // Keep high byte of 10-bit result (throw away lowest two bits)
 	
-	PORTB = sensorvalue; // echo results back out PORTD
+	PORTB = ~sensorvalue>>3; // echo results back out PORTB (right-shifted for the demo because I only have 5 LEDs wired (PB0-PB4), so I want to display the high 5 bits; also inverted because of LEDs wired as sinks)
 
     } // end main while
 } // end main
