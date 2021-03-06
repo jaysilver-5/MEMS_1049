@@ -2,6 +2,7 @@
  * adc_example.c
  *
  * Created: 3/20/2016 3:52:50 PM
+ * Updated 3/5/2021
  * Author : WClark
  */ 
 
@@ -26,8 +27,8 @@ int main(void)
 	// Set up ADC
 	DDRC =  0x00;  // define all Port C bits as input
 	PRR = 0x00;  // clear Power Reduction ADC bit (0) in PRR register
-	ADCSRA = 1<<ADEN | 1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0;  // 0x87 // 0b10000111 // Set ADC Enable bit (7) in ADCSRA register, and set ADC prescaler to 128 (bits 2-0 of ADCSRA = ADPS2-ADPS0 = 111)
-	ADMUX = 0<<REFS1 | 1<<REFS0 | 1<<ADLAR; //0x60; // 0b01100000  // select Analog Reference voltage to be AVcc (bits 7-6 of ADMUX = 01),
+	ADCSRA = 0b10000111; //1<<ADEN | 1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0;  // 0x87 // 0b10000111 // Set ADC Enable bit (7) in ADCSRA register, and set ADC prescaler to 128 (bits 2-0 of ADCSRA = ADPS2-ADPS0 = 111)
+	ADMUX = 0b01100000; //0<<REFS1 | 1<<REFS0 | 1<<ADLAR; //0x60; // 0b01100000  // select Analog Reference voltage to be AVcc (bits 7-6 of ADMUX = 01),
 						//left justification (bit 5 of ADMUX = ADLAR = 1);
 						//and select channel 0 (bits 3-0 of ADMUX = MUX3-MUX0 = 000)
     
