@@ -2,7 +2,7 @@
  * stepper_example.c
  *
  * Created: 3/8/2021 1:42:42 PM
- * Author : Buddy
+ * Author : wwclark
  */ 
 
 // This program applies full wave stepping to a bi-polar stepper motor.
