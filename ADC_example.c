@@ -17,7 +17,7 @@ The binary value of the high byte (bits 2-9 of the 10-bit converted value) are e
 
 #include <avr/io.h>
 //** GLOBAL VARIABLES **
-char sensorvalue = 0; // value read from analog sensor (0-1023)
+char sensorvalue = 0; // value read from analog sensor (0-255 since we are reading only 8 left-justified bits of the 10-bit number)
 
 int main(void)
 {
