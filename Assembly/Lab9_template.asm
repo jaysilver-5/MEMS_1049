@@ -26,8 +26,8 @@
 .CSEG          ;Code segment
 .ORG 0x0000      ;Set program origin
 	JMP Main  ; Reset vector, jump to main loop, 1.  Note that actual code is placed further down the program memory so as not to sit on top of vectors.
-	// JMP Int0_name ; INT0, 2 -- Interrupt Vector for INT0.  Points to INT0 code.
-	// JMP Int1_name   ;INT1, 3 -- Interrupt Vector for INT1.  Points to INT1 code.
+	; JMP Int0_name ; INT0, 2 -- Interrupt Vector for INT0.  Points to INT0 code.
+	; JMP Int1_name   ;INT1, 3 -- Interrupt Vector for INT1.  Points to INT1 code.
     ;PCINT0 not used,4
 	;PCINT1 not used,5
 	;PCINT2 not used,6
