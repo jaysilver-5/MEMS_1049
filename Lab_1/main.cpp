@@ -1,7 +1,7 @@
 /*
- * lab1_2019.cpp
+ * lab1_2020.cpp
  *
- * Created: 1/9/2019 12:29:02 PM
+ * Created: 1/9/2020 Based on Lab_1_2019
  * Author : WWClark
  */ 
 
@@ -19,8 +19,9 @@ This program is a solution to Lab 1 --
 int main(void)
 {
 	 	
-	DDRD = 0xE0;  // set bits PD7-PD5 as output, PD4-PD0 as input (this covers Pins 3 and 4 as needed for inputs, and 6 and 7 as needed for outputs)
-	PORTD = 0b11111111; // set all bits on PORTD so that all output are off (assumes circuit is wired as active low)
+	DDRD = 0b11000000;  // set bits PD7-PD6 as output, PD5-PD0 as input (this covers Pins 3 and 4 as needed for inputs, and 6 and 7 as needed for outputs)
+		// Follows a practice of making unused pins to be input (safer)
+	PORTD = 0b11000000; // set output bits on PORTD so that all outputs are off (they are wired as active low)
 		 
     // ============================================
     // P R O G R A M L O O P
@@ -28,23 +29,34 @@ int main(void)
 	while(1)
     {
 				
-       	if (PIND & 0b00001000) // "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
-		   // When read  as 1 (open switch) clear bit PD6 to turn on the LED.
+       	if (PIND & 0b00001000) // Check the status of Switch 1.  
+		   // This line checks the switch status by doing a Boolean operation between PIND (where the switch is connected) and a binary number that targets the 
+		   // single pin that we are trying to read (Pin 3). For more on Boolean operations and "single bit addressing", see the C Programming slides.
+		   // The argument of the If is TRUE only if the switch is closed (and Pin3 is a high voltage), in which case we want to turn on LED 1.
 		{
-			PORTD = PORTD & 0b10111111; // Clear PD6 (which is active low),  leave other bits unchanged  (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
+			PORTD = PORTD & 0b10111111; // Turn on LED 1. 
+			// This line uses more Boolean arithmetic to clear pin PD6 while leaving the other bits on PORTD unchanged.  Specifically, the line computes
+			// a logical AND between the existing PORTD values and a binary number that has 0 in the only bit that we want to ensure is 0, PD6.  All other bits remain
+			// unchanged (i.e. this line does not affect bit PD7, the other LED).
+			// The result is that since the LED on pin 6 of PORTD is wired as active low, this line causes it to turn on.
 		}
 		else 
 		{
-			PORTD = PORTD | 0b01000000;  // Set bit PD6 to turn off the  LED (which is active low), leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
+			PORTD = PORTD | 0b01000000;  // Turn off LED 1. 
+			// More Boolean arithmetic to cause PD6 to go high (a logical OR is performed between data in PORTD and a binary number that targets pin PD6), 
+			// which causes LED 1 to be off and other bits, specifically LED 2, are unchanged.
 		}
-		
-		if (PIND & 0b00010000) // "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
+		// Repeat for LED and Switch 2
+		if (PIND & 0b00010000) // Check the status of Switch 1.
+			// Same as above but pin PD4 is the target.
 		{
-			PORTD = PORTD & 0b01111111;  // Clear PD7, leave other bits unchanged (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
+			PORTD = PORTD & 0b01111111;  // Turn on LED 2.
+			// Same as in first If but pin PD7 is the target.
 		}
 		else 
 		{
-			PORTD = PORTD | 0b10000000; // Set PD7, leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
+			PORTD = PORTD | 0b10000000; // Turn off LED 2.
+			// Same as in first Else but pin PD7 is the target.
 		}
 		
 	}
