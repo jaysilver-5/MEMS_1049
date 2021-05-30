@@ -47,7 +47,7 @@ int main(void)
 			// which causes LED 1 to be off and other bits, specifically LED 2, are unchanged.
 		}
 		// Repeat for LED and Switch 2
-		if (PIND & 0b00010000) // Check the status of Switch 1.
+		if (PIND & 0b00010000) // Check the status of Switch 2.
 			// Same as above but pin PD4 is the target.
 		{
 			PORTD = PORTD & 0b01111111;  // Turn on LED 2.
