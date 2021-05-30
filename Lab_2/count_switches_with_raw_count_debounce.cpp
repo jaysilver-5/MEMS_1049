@@ -19,10 +19,10 @@ This program adds to Lab 1 code that monitors switches (e.g. one on each of two 
 
 //** GLOBAL VARIABLES **/
 long freqclk = 16000000; // clock frequency in Hz
-volatile int count_door1 = 0;
-volatile int count_door2 = 0;
-char flag1 = 0;
-char flag2 = 0;
+volatile int door1_count = 0;
+volatile int door2_count = 0;
+char door1_is_open_flag = 0;
+char door2_is_open_flag = 0;
 
 //** FUNCTION DECLARATIONS **//
 void wait(volatile int N);  // Note that variables in the delay loops are declared as volatile.  If not, the compiler will likely
@@ -35,60 +35,68 @@ void delay_1_msec_raw_count();
 
 int main(void)
 {
-	DDRD = 0xE0;  // set bits PD7-PD5 as output, PD4-PD0 as input (this covers Pins 3 and 4 as needed for inputs, and 6 and 7 as needed for outputs)
-	PORTD = 0b11111111; // set all bits on PORTD so that all output are off (assumes circuit is wired as active low)
+	DDRD = 0b11000000;  // set bits PD7-PD6 as output, PD5-PD0 as input (this covers Pins 3 and 4 as needed for inputs, and 6 and 7 as needed for outputs)
+	PORTD = 0b11000000; // set all output bits on PORTD so that all output are off (assumes circuits are wired as active low)
 		 
     // ============================================
     // P R O G R A M L O O P
     // ============================================
 	while(1)
     {
-		//check "door 1" to see if it is open or closed
-	   	if (PIND & 0b00001000) // Door 1 switch is open. "Read" the contents of PortD3 using bit-wise operation (AND PIND with binary 8 so that only PD3 is read)
-		   // When read  as 1 (open switch) clear bit PD6 to turn on the LED.
-		{
-			PORTD = PORTD & 0b10111111; // Clear PD6 (which is active low),  leave other bits unchanged  (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
-			if (flag1 == 0) // only want to change count and use debounce the first time we see the switch open
+	    
+	    if (PIND & 0b00001000) // Check the status of Switch 1.
+	    // This line checks the switch status by doing a Boolean operation between PIND (where the switch is connected) and a binary number that targets the
+	    // single pin that we are trying to read (Pin 3). For more on Boolean operations and "single bit addressing", see the C Programming slides.
+	    // The argument of the If is TRUE only if the switch is closed (and Pin3 is a high voltage), in which case we want to turn on LED 1.
+	    {
+		    PORTD = PORTD & 0b10111111; // Turn on LED 1.
+		    // This line uses more Boolean arithmetic to clear pin PD6 while leaving the other bits on PORTD unchanged.  Specifically, the line computes
+		    // a logical AND between the existing PORTD values and a binary number that has 0 in the only bit that we want to ensure is 0, PD6.  All other bits remain
+		    // unchanged (i.e. this line does not affect bit PD7, the other LED).
+		    // The result is that since the LED on pin 6 of PORTD is wired as active low, this line causes it to turn on.
+			if (door1_is_open_flag == 0) // only want to change count and use debounce the first time we see the switch open
 			{
-				count_door1++; // Increment count on door opening
-				flag1 = 1; 
+				door1_count++; // Increment count on door opening
+				door1_is_open_flag = 1;
 				wait(50); // debounce delay
 			}
-		}
-		else // Door 1 switch is closed.
-		{
-			PORTD = PORTD | 0b01000000;  // Set bit PD6 to turn off the  LED (which is active low), leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
-			if (flag1 == 1) // only want to use debounce the first time we see the switch close
+	    }
+	    else
+	    {
+		    PORTD = PORTD | 0b01000000;  // Turn off LED 1.
+		    // More Boolean arithmetic to cause PD6 to go high (a logical OR is performed between data in PORTD and a binary number that targets pin PD6),
+		    // which causes LED 1 to be off and other bits, specifically LED 2, are unchanged.
+			if (door1_is_open_flag == 1) // only want to use debounce the first time we see the switch close
 			{
-				flag1 = 0;
+				door1_is_open_flag = 0;
+				//wait(50); // debounce delay
+			}
+	    }
+	    // Repeat for LED and Switch 2
+	    if (PIND & 0b00010000) // Check the status of Switch 2.
+	    // Same as above but pin PD4 is the target.
+	    {
+		    PORTD = PORTD & 0b01111111;  // Turn on LED 2.
+		    // Same as in first If but pin PD7 is the target.
+			if (door2_is_open_flag == 0) // only want to change count and use debounce the first time we see the switch open
+			{
+				door2_count++; // Increment count on door opening
+				door2_is_open_flag = 1;
 				wait(50); // debounce delay
 			}
-		}
-		
-		//check "door 2" to see if it is open or closed
-		if (PIND & 0b00010000) // Door 2 switch is open.   "Read" the contents of PortD4 using bit-wise operation (AND PIND with binary 16 so that only PD4 is read)
-		{
-			PORTD = PORTD & 0b01111111;  // Clear PD7, leave other bits unchanged (AND PIND with a binary number that has 0 in the only bit that we want to ensure is 0)
-			if (flag2 == 0) // only want to change count and use debounce the first time we see the switch open
+	    }
+	    else
+	    {
+		    PORTD = PORTD | 0b10000000; // Turn off LED 2.
+		    // Same as in first Else but pin PD7 is the target.
+			if (door2_is_open_flag == 1) // only want to use debounce the first time we see the switch close
 			{
-				count_door2++; // Increment count on door opening
-				flag2 = 1;
+				door2_is_open_flag = 0;
 				wait(50); // debounce delay
 			}
-
-		}
-		else // Door 2 switch is closed.
-		{
-			PORTD = PORTD | 0b10000000; // Set PD7, leave other bits unchanged (OR PIND with a binary number that has 1 in the only bit that we want to ensure is 1)
-			if (flag2 == 1) // only want to use debounce the first time we see the switch close
-			{
-				flag2 = 0;
-				wait(50); // debounce delay
-			}
-		
-		}
-	}
-	
+	    }
+	    
+    }	
 return 0;	
 } // end main
 
@@ -120,14 +128,12 @@ void delay_1_msec_raw_count() {
 			Inputs: None
 			Outputs: None
 	*/
-	volatile int count = (freqclk/1000-28)/4; // each cycle takes 4 clock cycles, so count is the number of cycles needed to create a 1 msec delay.
+	volatile int i = (freqclk/1000-28)/4; // each cycle takes 4 clock cycles, so count is the number of cycles needed to create a 1 msec delay.
 									// 28 is the approximate number of other clock cycles used in the subroutine
-	while (count > 1) {  // This loop is expected to create a 1 msec delay, but it is in fact much longer.  Because of the size of the variables,
+	while (i > 1) {  // This loop is expected to create a 1 msec delay, but it is in fact much longer.  Because of the size of the variables,
 			// there is a lot more that needs to be done each cycle so the loop takes much longer than 1 msec to execute. To know exact time for each 
 			// instruction, use assembly language instead of C. (Or look at the disassembly code file and count instructions.)
-			count--; // decrement count
+			i--; // decrement count
 	}
-	
-		
 } // end delay_1_msec_raw_count()
 
