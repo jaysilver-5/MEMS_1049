@@ -53,6 +53,7 @@ int main(void)
 	TCCR0B = 1<<CS02 | 1<<CS00;	//TCCR0B = 0x05; // **Start TIMER0, Normal mode, crystal clock, prescaler = 1024 (one cycle creates a 16 msec delay if count preloaded 5)
 		
    while(1)  // this is just a dummy loop that continually does some task while the timing and LED blinking is handled automatically in the background
+	   // You can do any other tasks in this loop.
     {
        i++;
 	   if (i == 1000) {
