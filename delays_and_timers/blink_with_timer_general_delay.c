@@ -1,4 +1,4 @@
-﻿/*
+/*
  * blink_with_timer_general_delay.c
  *
  * Created: 5/17/2020
@@ -32,12 +32,15 @@ int main(void)
 
    while(1)
     {
-        // The main loop -- toggle the bit, then delay to set the frequency
-        PORTC = PORTC ^ 1<<PORTC0;  // Note that this uses the Exclusive OR operator, which toggles an individual 
-			// bit without changing the other bits in PORTC
-                
-        wait_with_prescaler_selection(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
+         // The main loop -- toggle the bit, then delay to set the frequency
+         PORTC = 0b00000001; // Turn off LED -- note that this also clears all other bits on PORTC
+         wait_with_prescaler_selection(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
+         PORTC = 0b00000000; // Turn on LED --  note that this also clears all other bits on PORTC
+          wait_with_prescaler_selection(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
          
+         // An alternate and efficient way to toggle the LED on and off is shown below with single bit addressing.  This avoids affecting other bits on PORTC besides the one we want to address.
+         //PORTC = PORTC ^ 1<<PORTC0;  // Note that this uses the Exclusive OR operator, which toggles an individual bit without changing the other bits in PORTC
+         // wait_with_prescaler_selection(250,2); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
     }
 	
 	return(0);
