@@ -40,10 +40,14 @@ int main(void)
    while(1)
     {
         // The main loop -- toggle the bit, then delay to set the frequency
-       PORTC = PORTC ^ 1<<PORTC0;  // Note that this uses the Exclusive OR operator, which toggles an individual 
-			// bit without changing the other bits in PORTC
-                
-        wait(250); // call delay function to delay a certain number of msec
+        PORTC = 0b00000001; // Turn off LED -- note that this also clears all other bits on PORTC
+        wait(250);
+        PORTC = 0b00000000; // Turn on LED --  note that this also clears all other bits on PORTC
+        wait(250);
+        
+        // An alternate and efficient way to toggle the LED on and off is shown below with single bit addressing.  This avoids affecting other bits on PORTC besides the one we want to address.
+        //PORTC = PORTC ^ 1<<PORTC0;  // Note that this uses the Exclusive OR operator, which toggles an individual bit without changing the other bits in PORTC
+        //wait(250); // call delay function: the wait function will loop 250 time using delay #2 (1 msec each loop) for a total of 250 msec delay
 		         
     }
 } // end main()
