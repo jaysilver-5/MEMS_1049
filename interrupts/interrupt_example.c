@@ -25,11 +25,10 @@ ISR(INT0_vect)
 	
 	temp = PORTC;	// Save current value on PORTC -- could push this to the Stack
 	
-	PORTC = ~(PORTC ^ 1<<1); // Toggle bit 1
+	PORTC = 0b11111111; // turn off all bits of PORTC
 	
 	wait(250);
-	//wait(250);
-	
+		
 	PORTC = temp;	//Restore old value to PORTC -- may first need to pull this from the Stack
 }
 ISR(INT1_vect)
@@ -38,10 +37,9 @@ ISR(INT1_vect)
 	
 	temp = PORTC;	// Save current value on PORTC -- could push this to the Stack
 	
-	PORTC = ~(PORTC ^ 1<<2); // Toggle bit 2
+	PORTC = 0b00000000;  // Turn on all bits of PORTC
 	
-	//wait(250);
-	//wait(250);
+	wait(250);
 	
 	PORTC = temp;	//Restore old value to PORTC -- may first need to pull this from the Stack
 	
@@ -51,7 +49,6 @@ int main(void)
 {
 	DDRD = 0<<PD2 | 0<<PD3;		// Set PD2 and PD3 as input (For use as interrupts INT0 and INT1)
 	PORTD = 1<<PD2 | 1<<PD3;		// Enable PD2 and PD3 pull-up resistors
-	
 	DDRC = 0b11111111; // Set PORTC as output
 		
 	EICRA = 1<<ISC01 | 1<<ISC00 | 1<<ISC11 | 0<<ISC10;	// Trigger INT0 on rising edge; Trigger INT1 on falling edge
