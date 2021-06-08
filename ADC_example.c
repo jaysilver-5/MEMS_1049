@@ -17,7 +17,7 @@ The binary value of the high byte (bits 2-9 of the 10-bit converted value) are e
 
 #include <avr/io.h>
 //** GLOBAL VARIABLES **
-char sensorvalue = 0; // value read from analog sensor (0-255 since we are reading only 8 left-justified bits of the 10-bit number)
+char sensorvalue = 0; // value read from analog sensor (0-255 since we'll only read the upper 8 bits of the 10-bit number)
 
 int main(void)
 {
@@ -36,8 +36,8 @@ int main(void)
     {
     
 	// Read analog input
-	ADCSRA |= (1<<ADSC); // Start conversion
-	while ((ADCSRA & (1<<ADIF)) ==0); // wait for conversion to finish
+	ADCSRA = ADCSRA | 0b01000000; //Alternate code: ADCSRA |= (1<<ADSC); // Start conversion
+	while ((ADCSRA & 0b00010000) == 0); // Alternate code: while ((ADCSRA & (1<<ADIF)) ==0); // wait for conversion to finish
 	
 	sensorvalue = ADCH; // Keep high byte of 10-bit result (throw away lowest two bits)
 	
